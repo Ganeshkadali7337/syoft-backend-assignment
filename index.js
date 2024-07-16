@@ -115,6 +115,11 @@ app.post("/create-product", Authenticate, async (req, res) => {
   const { title, description, inventoryCount } = req.body;
 
   try {
+    if (role !== "admin") {
+      res
+        .status(400)
+        .send({ status: 400, msg: "only admins can create product" });
+    }
     if (!title || !description || !inventoryCount) {
       return res.status(400).send({
         status: 400,
@@ -129,11 +134,6 @@ app.post("/create-product", Authenticate, async (req, res) => {
       });
     }
 
-    if (role !== "admin") {
-      res
-        .status(400)
-        .send({ status: 400, msg: "only admins can create product" });
-    }
     const newProduct = new productData({
       title,
       description,
